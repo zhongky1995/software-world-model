@@ -1,0 +1,15 @@
+# Local authoring records and recoverable archives
+_kb-control/
+.knowledgebase-audit.json
+
+# Dependencies and system files
+node_modules/
+.DS_Store
+*.log
+__pycache__/
+.env
+.env.*
+
+# Local test evidence
+test-results/
+playwright-report/

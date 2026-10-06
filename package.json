@@ -1,0 +1,23 @@
+{
+  "name": "software-world-model",
+  "version": "1.0.0",
+  "private": true,
+  "description": "面向零基础读者的软件原理知识库与离线阅读器",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "dependencies": {
+    "marked": "17.0.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhongky1995/software-world-model.git"
+  }
+}

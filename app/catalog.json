@@ -1,0 +1,568 @@
+{
+  "title": "软件世界模型",
+  "groups": [
+    {
+      "id": "computation",
+      "name": "计算与运行",
+      "question": "规则怎样变成实际行为？",
+      "description": "从程序、运行环境走到资源与算法。"
+    },
+    {
+      "id": "state",
+      "name": "数据与状态",
+      "question": "系统怎样组织与记住信息？",
+      "description": "连接数据模型、状态、存储与一致性。"
+    },
+    {
+      "id": "communication",
+      "name": "通信与协作",
+      "question": "分散的部分怎样一起工作？",
+      "description": "理解前后端、接口、信息流与时间。"
+    },
+    {
+      "id": "architecture",
+      "name": "边界与架构",
+      "question": "复杂系统怎样分工和连接？",
+      "description": "用职责、抽象和依赖理解整体结构。"
+    },
+    {
+      "id": "reliability",
+      "name": "可靠性与信任",
+      "question": "失败和限制下，怎样保持正确？",
+      "description": "看见失败、权限、观测与资源取舍。"
+    },
+    {
+      "id": "evolution",
+      "name": "演进与交付",
+      "question": "软件怎样到达用户并持续变化？",
+      "description": "理解交付、版本、迁移与验证。"
+    },
+    {
+      "id": "ai",
+      "name": "AI 软件",
+      "question": "模型在系统中承担什么职责？",
+      "description": "把模型、Agent 和人的判断放回地图。"
+    }
+  ],
+  "pages": [
+    {
+      "id": "world-map",
+      "group": "orientation",
+      "title": "你点一下，软件里面发生了什么？",
+      "question": "你点一下，软件里面发生了什么？",
+      "summary": "你在手机上点“收藏”，一篇文章就进入收藏夹。这个小动作，已经包含了理解软件的三个起点：有人发出要求，程序按规则做事，系统记住结果。",
+      "path": "content/00-world-map.md",
+      "terms": [
+        "软件世界模型"
+      ],
+      "number": 0,
+      "related": [
+        "program",
+        "state",
+        "boundaries"
+      ]
+    },
+    {
+      "id": "program",
+      "group": "computation",
+      "title": "点一个按钮，电脑怎么知道要做什么？",
+      "question": "点一个按钮，电脑怎么知道要做什么？",
+      "summary": "你点“收藏”，软件把文章加入清单；你点“取消收藏”，它又把文章移出。按钮外观可以很相似，结果却不同，因为背后安排了不同的规则。",
+      "path": "content/01-computation/01-program.md",
+      "terms": [
+        "程序",
+        "函数",
+        "副作用"
+      ],
+      "number": 1,
+      "related": [
+        "runtime",
+        "state"
+      ]
+    },
+    {
+      "id": "runtime",
+      "group": "computation",
+      "title": "代码放在那里，为什么软件还没开始工作？",
+      "question": "代码放在那里，为什么软件还没开始工作？",
+      "summary": "一份菜谱放在桌上，饭不会自己出现。同样，写好的代码放在文件里，也不会自动回应你的点击。运行，就是让电脑开始执行代码里描述的工作。",
+      "path": "content/01-computation/02-runtime.md",
+      "terms": [
+        "运行时",
+        "进程",
+        "依赖"
+      ],
+      "number": 2,
+      "related": [
+        "resources",
+        "delivery"
+      ]
+    },
+    {
+      "id": "resources",
+      "group": "computation",
+      "title": "电脑的计算、内存和硬盘，各忙什么？",
+      "question": "电脑的计算、内存和硬盘，各忙什么？",
+      "summary": "你让阅读助手同时打开很多长文章，电脑可能变慢。软件里的每一步工作，最终都要由真实机器完成，而机器的能力有上限。",
+      "path": "content/01-computation/03-resources.md",
+      "terms": [
+        "处理器",
+        "内存",
+        "操作系统"
+      ],
+      "number": 3,
+      "related": [
+        "algorithms",
+        "storage"
+      ]
+    },
+    {
+      "id": "algorithms",
+      "group": "computation",
+      "title": "为什么做同一件事，有的软件快得多？",
+      "question": "为什么做同一件事，有的软件快得多？",
+      "summary": "要在一万篇文章里找出《城市漫步》，可以从第一篇开始逐一比较，也可以利用事先整理好的标题目录，缩小要找的范围。",
+      "path": "content/01-computation/04-algorithms.md",
+      "terms": [
+        "算法",
+        "数据结构",
+        "复杂度"
+      ],
+      "number": 4,
+      "related": [
+        "performance",
+        "data-model"
+      ]
+    },
+    {
+      "id": "data-model",
+      "group": "state",
+      "title": "软件怎么把“人和文章”记成数据？",
+      "question": "软件怎么把“人和文章”记成数据？",
+      "summary": "你认识一篇文章，会记得标题、内容、作者；你认识一个收藏，会知道谁收藏了哪篇文章。电脑要处理这些东西，也需要明确保存哪些信息、怎样区分它们。",
+      "path": "content/02-state/05-data-model.md",
+      "terms": [
+        "实体",
+        "标识",
+        "约束"
+      ],
+      "number": 5,
+      "related": [
+        "state",
+        "consistency"
+      ]
+    },
+    {
+      "id": "state",
+      "group": "state",
+      "title": "为什么软件能记得你刚才做过什么？",
+      "question": "为什么软件能记得你刚才做过什么？",
+      "summary": "你把同一篇文章打开两次。第一次它没有收藏标记；点过收藏以后，第二次打开，星星已经亮了。文章没变，你的动作也一样，软件的反应却变了。",
+      "path": "content/02-state/06-state.md",
+      "terms": [
+        "状态",
+        "生命周期",
+        "派生状态"
+      ],
+      "number": 6,
+      "related": [
+        "storage",
+        "consistency"
+      ]
+    },
+    {
+      "id": "storage",
+      "group": "state",
+      "title": "文章、账号、图片，为什么不全放在一个地方？",
+      "question": "文章、账号、图片，为什么不全放在一个地方？",
+      "summary": "阅读助手需要保留文章正文、谁收藏了什么、封面图片。它还希望你打开常看的文章时快一点。不同东西，保存和取用的需要并不相同。",
+      "path": "content/02-state/07-storage.md",
+      "terms": [
+        "数据库",
+        "对象存储",
+        "缓存"
+      ],
+      "number": 7,
+      "related": [
+        "performance",
+        "change"
+      ]
+    },
+    {
+      "id": "consistency",
+      "group": "state",
+      "title": "两台设备看到不同的收藏，究竟哪份算数？",
+      "question": "两台设备看到不同的收藏，究竟哪份算数？",
+      "summary": "你在手机收藏了一篇文章，电脑上的收藏夹暂时还没出现它。并不一定是文章消失了，也可能是电脑还没取得新的记录。",
+      "path": "content/02-state/08-consistency.md",
+      "terms": [
+        "一致性",
+        "事务",
+        "冲突"
+      ],
+      "number": 8,
+      "related": [
+        "time",
+        "failure"
+      ]
+    },
+    {
+      "id": "client-server",
+      "group": "communication",
+      "title": "前端、后端、服务器，分别在哪里？",
+      "question": "前端、后端、服务器，分别在哪里？",
+      "summary": "你用手机打开阅读助手，朋友用电脑打开同一个产品。两人看的是各自的屏幕，却可能读到同一篇文章。这意味着：各自的操作入口，在和某个共同提供能力的地方合作。",
+      "path": "content/03-communication/09-client-server.md",
+      "terms": [
+        "客户端",
+        "服务端",
+        "前端",
+        "后端"
+      ],
+      "number": 9,
+      "related": [
+        "interface",
+        "trust"
+      ]
+    },
+    {
+      "id": "interface",
+      "group": "communication",
+      "title": "API 是什么，为什么程序要通过它合作？",
+      "question": "API 是什么，为什么程序要通过它合作？",
+      "summary": "你到咖啡店说“要一杯拿铁”，店员知道这项服务需要什么信息、会交给你什么。如果你跑进后厨，对着每台机器随便操作，合作就很难稳定。",
+      "path": "content/03-communication/10-interface.md",
+      "terms": [
+        "接口",
+        "API",
+        "协议"
+      ],
+      "number": 10,
+      "related": [
+        "boundaries",
+        "change"
+      ]
+    },
+    {
+      "id": "flow",
+      "group": "communication",
+      "title": "点“生成摘要”后，文章内容去了哪里？",
+      "question": "点“生成摘要”后，文章内容去了哪里？",
+      "summary": "你点“生成摘要”，页面稍后显示一段短文字。要解释这件事，可以追两条线：材料经过哪里、变成了什么；哪些动作让工作开始或继续。",
+      "path": "content/03-communication/11-flow.md",
+      "terms": [
+        "数据流",
+        "控制流",
+        "事件"
+      ],
+      "number": 11,
+      "related": [
+        "time",
+        "observability"
+      ]
+    },
+    {
+      "id": "time",
+      "group": "communication",
+      "title": "软件为什么要“等待”，又怎样同时做几件事？",
+      "question": "软件为什么要“等待”，又怎样同时做几件事？",
+      "summary": "你请阅读助手生成摘要，AI 需要一些时间。页面可以一直挡着等结果，也可以让你继续读别的文章，等摘要好了再通知。",
+      "path": "content/03-communication/12-time.md",
+      "terms": [
+        "同步",
+        "异步",
+        "并发",
+        "队列"
+      ],
+      "number": 12,
+      "related": [
+        "consistency",
+        "failure"
+      ]
+    },
+    {
+      "id": "boundaries",
+      "group": "architecture",
+      "title": "软件那么多工作，怎样分给不同部分？",
+      "question": "软件那么多工作，怎样分给不同部分？",
+      "summary": "假设阅读助手已经能收藏文章，现在还要支持 AI 摘要。如果把“谁登录了、文章存在哪里、怎么请求摘要、按钮怎么显示”混在一起，每改一个功能，都要理解一大片工作。",
+      "path": "content/04-architecture/13-boundaries.md",
+      "terms": [
+        "模块",
+        "职责",
+        "边界"
+      ],
+      "number": 13,
+      "related": [
+        "dependency",
+        "shape"
+      ]
+    },
+    {
+      "id": "abstraction",
+      "group": "architecture",
+      "title": "不知道内部每个细节，也能理解和使用软件吗？",
+      "question": "不知道内部每个细节，也能理解和使用软件吗？",
+      "summary": "你会使用电梯，不必先知道电机怎样转动。楼层按钮把大量内部工作收拢成你能使用的几个选择：到哪里、能否到达、什么时候到了。",
+      "path": "content/04-architecture/14-abstraction.md",
+      "terms": [
+        "抽象",
+        "封装"
+      ],
+      "number": 14,
+      "related": [
+        "interface",
+        "model"
+      ]
+    },
+    {
+      "id": "dependency",
+      "group": "architecture",
+      "title": "为什么改了一个地方，另一个地方也出问题？",
+      "question": "为什么改了一个地方，另一个地方也出问题？",
+      "summary": "假设收藏列表一直用文章编号取正文。文章模块有一天改变了编号的格式，收藏模块却还按旧格式查找，结果标题能显示，文章打不开了。",
+      "path": "content/04-architecture/15-dependency.md",
+      "terms": [
+        "依赖",
+        "耦合",
+        "内聚"
+      ],
+      "number": 15,
+      "related": [
+        "shape",
+        "change"
+      ]
+    },
+    {
+      "id": "shape",
+      "group": "architecture",
+      "title": "一个软件，要放在一台电脑还是很多台上？",
+      "question": "一个软件，要放在一台电脑还是很多台上？",
+      "summary": "阅读助手可以把文章、账号、摘要管理一起运行，也可以让它们分别运行。有些系统只在你的电脑上工作，有些要让许多设备通过网络配合。",
+      "path": "content/04-architecture/16-shape.md",
+      "terms": [
+        "分层",
+        "单体",
+        "服务",
+        "分布式"
+      ],
+      "number": 16,
+      "related": [
+        "failure",
+        "delivery"
+      ]
+    },
+    {
+      "id": "failure",
+      "group": "reliability",
+      "title": "为什么你点了按钮，软件却没有给出结果？",
+      "question": "为什么你点了按钮，软件却没有给出结果？",
+      "summary": "你点收藏，页面一直转圈。可能是要求没送到，也可能是已经保存了、回复却没回来。没有收到结果，只能说明你还不知道结果，不能直接说明对方没有做。",
+      "path": "content/05-reliability/17-failure.md",
+      "terms": [
+        "局部失败",
+        "超时",
+        "重试",
+        "幂等"
+      ],
+      "number": 17,
+      "related": [
+        "observability",
+        "validation"
+      ]
+    },
+    {
+      "id": "trust",
+      "group": "reliability",
+      "title": "登录了，为什么还不能看所有人的文章？",
+      "question": "登录了，为什么还不能看所有人的文章？",
+      "summary": "你能打开自己的私密文章，不应该因此也能打开别人的。系统必须分别回答两个问题：你是谁？你可以对这份内容做什么？",
+      "path": "content/05-reliability/18-trust.md",
+      "terms": [
+        "认证",
+        "授权",
+        "信任边界"
+      ],
+      "number": 18,
+      "related": [
+        "agent",
+        "data-model"
+      ]
+    },
+    {
+      "id": "observability",
+      "group": "reliability",
+      "title": "软件出问题时，怎样知道里面发生了什么？",
+      "question": "软件出问题时，怎样知道里面发生了什么？",
+      "summary": "阅读助手提示“摘要失败”，这句话没有告诉你是文章没读到、AI 没回复，还是回复后没能保存。软件需要留下可检查的运行线索。",
+      "path": "content/05-reliability/19-observability.md",
+      "terms": [
+        "日志",
+        "指标",
+        "追踪",
+        "可观测性"
+      ],
+      "number": 19,
+      "related": [
+        "validation",
+        "performance"
+      ]
+    },
+    {
+      "id": "performance",
+      "group": "reliability",
+      "title": "软件的“快”，到底是哪里快？",
+      "question": "软件的“快”，到底是哪里快？",
+      "summary": "假设搜索马上显示结果，生成摘要却要等很久。说这个软件“快”或“慢”，都漏掉了不同工作的差别。",
+      "path": "content/05-reliability/20-performance.md",
+      "terms": [
+        "延迟",
+        "吞吐量",
+        "瓶颈"
+      ],
+      "number": 20,
+      "related": [
+        "algorithms",
+        "time"
+      ]
+    },
+    {
+      "id": "delivery",
+      "group": "evolution",
+      "title": "AI 写好代码后，为什么别人还不能打开软件？",
+      "question": "AI 写好代码后，为什么别人还不能打开软件？",
+      "summary": "AI 在你的电脑上写好了阅读助手，你也能打开。朋友输入同样地址，却访问不到。代码存在，并不代表已经有一个朋友能访问的运行入口。",
+      "path": "content/06-evolution/21-delivery.md",
+      "terms": [
+        "构建",
+        "部署",
+        "环境",
+        "DNS"
+      ],
+      "number": 21,
+      "related": [
+        "change",
+        "runtime"
+      ]
+    },
+    {
+      "id": "change",
+      "group": "evolution",
+      "title": "软件更新了，原来的文章和收藏怎么办？",
+      "question": "软件更新了，原来的文章和收藏怎么办？",
+      "summary": "第一版阅读助手只记录收藏文章，第二版想让收藏分进不同文件夹。旧用户已经有许多收藏，更新时要决定它们归到哪里。",
+      "path": "content/06-evolution/22-change.md",
+      "terms": [
+        "版本控制",
+        "迁移",
+        "兼容性",
+        "回滚"
+      ],
+      "number": 22,
+      "related": [
+        "consistency",
+        "validation"
+      ]
+    },
+    {
+      "id": "validation",
+      "group": "evolution",
+      "title": "页面能打开，就说明软件做好了吗？",
+      "question": "页面能打开，就说明软件做好了吗？",
+      "summary": "阅读助手页面能打开，按钮也能点，但收藏以后换台电脑却找不到记录。它的一部分可用，用户想完成的整件事仍没成立。",
+      "path": "content/06-evolution/23-validation.md",
+      "terms": [
+        "测试",
+        "验收",
+        "不变量"
+      ],
+      "number": 23,
+      "related": [
+        "model",
+        "system-judgment"
+      ]
+    },
+    {
+      "id": "model",
+      "group": "ai",
+      "title": "AI 在软件里负责什么，其他部分还用来做什么？",
+      "question": "AI 在软件里负责什么，其他部分还用来做什么？",
+      "summary": "阅读助手能保存文章，也能生成摘要。保存一份记录可以按明确规则做；把长文章概括成几句话，则需要理解和生成文字的能力。",
+      "path": "content/07-ai/24-model.md",
+      "terms": [
+        "模型推理",
+        "上下文",
+        "检索"
+      ],
+      "number": 24,
+      "related": [
+        "agent",
+        "state"
+      ]
+    },
+    {
+      "id": "agent",
+      "group": "ai",
+      "title": "聊天 AI 怎样变成能替你做事的助手？",
+      "question": "聊天 AI 怎样变成能替你做事的助手？",
+      "summary": "你说“找出我收藏里与旅行有关的文章，整理一份摘要”。普通回答可能直接给出建议；能做事的助手需要查收藏、取得文章、读结果，再决定下一步。",
+      "path": "content/07-ai/25-agent.md",
+      "terms": [
+        "Agent",
+        "工作流",
+        "工具",
+        "宿主"
+      ],
+      "number": 25,
+      "related": [
+        "trust",
+        "failure"
+      ]
+    },
+    {
+      "id": "system-judgment",
+      "group": "ai",
+      "title": "有了这张地图，怎样更清楚地和 AI 讨论软件？",
+      "question": "有了这张地图，怎样更清楚地和 AI 讨论软件？",
+      "summary": "你不必先写出所有代码，也可以把产品要做的事和需要保持的规则讲清楚。软件世界模型帮助你把“做个阅读助手”这样的愿望，展开成可以讨论的工作安排。",
+      "path": "content/07-ai/26-system-judgment.md",
+      "terms": [
+        "设计约定",
+        "取舍"
+      ],
+      "number": 26,
+      "related": [
+        "world-map",
+        "boundaries"
+      ]
+    },
+    {
+      "id": "glossary",
+      "group": "reference",
+      "title": "遇到陌生名词，来这里查一句解释",
+      "question": "遇到陌生名词，来这里查一句解释",
+      "summary": "术语索引提供简短定义、别名和唯一正文入口。",
+      "path": "content/08-reference/glossary.md",
+      "terms": [],
+      "number": 27,
+      "related": [
+        "world-map",
+        "sources"
+      ]
+    },
+    {
+      "id": "sources",
+      "group": "reference",
+      "title": "想再深入，去哪里读？",
+      "question": "想再深入，去哪里读？",
+      "summary": "列出一手资料的支持范围，并区分通用解释、教学分类与尚未验证的效果。",
+      "path": "content/08-reference/sources.md",
+      "terms": [],
+      "number": 28,
+      "related": [
+        "world-map",
+        "glossary"
+      ]
+    }
+  ]
+}
