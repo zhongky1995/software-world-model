@@ -1,11 +1,15 @@
 (() => {
   'use strict';
-  const config = JSON.parse(document.getElementById('analytics-config').textContent);
-  const enabled = location.protocol === 'https:' && location.hostname === config.hostname &&
-    location.pathname.startsWith(config.basePath) && navigator.doNotTrack !== '1';
+  let config = {};
+  try { config = JSON.parse(document.getElementById('analytics-config').textContent); } catch {}
+  const enabled = /^G-[A-Z0-9]+$/.test(config.measurementId || '') &&
+    typeof config.basePath === 'string' && config.basePath.startsWith('/') &&
+    location.protocol === 'https:' && location.hostname === config.hostname &&
+    location.pathname.startsWith(config.basePath) && navigator.doNotTrack !== '1' &&
+    navigator.globalPrivacyControl !== true;
   let ready = false, failed = false, view = null, lastUrl = null;
   const queue = [];
-  // Referrer paths explain traffic sources; query strings may contain private input.
+  // Strip query strings and fragments before sending traffic sources.
   let referrer = '';
   try {
     const source = new URL(document.referrer);
@@ -19,44 +23,54 @@
       return;
     }
     try {
-      const request = window.umami.track(props => ({ ...props, ...payload, referrer }));
-      request?.catch?.(() => {});
-    } catch {} // Analytics must never interrupt reading or navigation.
+      const page = {
+        page_location: 'https://' + config.hostname + payload.url,
+        page_title: payload.title,
+        page_referrer: payload.referrer
+      };
+      if (!payload.name) {
+        // Keep automatic engagement attached to the current virtual article.
+        window.gtag('config', config.measurementId, { ...page, send_page_view: false });
+      }
+      window.gtag('event', payload.name ? payload.name.replace(/-/g, '_') : 'page_view', {
+        ...page, project: config.project, ...payload.data, send_to: config.measurementId
+      });
+    } catch {} // A blocked tracker must never interrupt reading or navigation.
   }
 
   window.readerAnalytics = {
     page(article, title) {
-      view = { url: config.basePath + article, title };
-      if (view.url === lastUrl) return;
-      lastUrl = view.url;
+      const url = config.basePath + article;
+      if (url === lastUrl) return;
+      view = { url, title, referrer: lastUrl ? 'https://' + config.hostname + lastUrl : referrer };
+      lastUrl = url;
       send({ ...view });
     },
     event(name, properties = {}) {
       if (!view) return;
-      send({ ...view, name, data: { project: config.project, ...properties } });
+      send({ ...view, name, data: { ...properties } });
     }
   };
 
   if (!enabled) return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', config.measurementId, {
+    send_page_view: false,
+    page_location: 'https://' + config.hostname + config.basePath,
+    page_referrer: referrer,
+    page_title: config.project,
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false,
+    cookie_prefix: config.project.replace(/-/g, '_'),
+    cookie_path: config.basePath,
+    cookie_flags: 'SameSite=Lax;Secure'
+  });
   const script = document.createElement('script');
-  script.src = config.scriptUrl;
+  script.src = 'https://www.googletagmanager.com/gtag/js?id=' + config.measurementId;
   script.async = true;
-  script.dataset.websiteId = config.websiteId;
-  // The reader sends one explicit pageview per article, including hash navigation.
-  script.dataset.autoTrack = 'false';
-  script.dataset.domains = config.hostname;
-  script.dataset.tag = config.project;
-  script.dataset.excludeSearch = 'true';
-  script.dataset.doNotTrack = 'true';
-  script.onload = () => {
-    if (typeof window.umami?.track !== 'function') {
-      failed = true;
-      queue.length = 0;
-      return;
-    }
-    ready = true;
-    queue.splice(0).forEach(send);
-  };
+  script.onload = () => { ready = true; queue.splice(0).forEach(send); };
   script.onerror = () => { failed = true; queue.length = 0; };
   document.head.appendChild(script);
 })();
