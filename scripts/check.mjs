@@ -11,6 +11,7 @@ const html = read('site/index.html');
 const match = html.match(/<script id="knowledge-data" type="application\/json">([\s\S]*?)<\/script>/);
 assert.ok(match, 'The built reading app must contain its content');
 assert.ok(!html.includes('__PAYLOAD__'), 'Build placeholder was not replaced');
+assert.ok(!/__ANALYTICS_(?:CONFIG|RUNTIME)__/.test(html), 'Analytics was not embedded');
 const data = JSON.parse(match[1]);
 const ids = new Set(catalog.pages.map(page => page.id));
 assert.equal(ids.size, catalog.pages.length, 'Duplicate route');

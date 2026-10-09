@@ -51,7 +51,11 @@ const pages=catalog.pages.map(p=>{
 });
 const payload=JSON.stringify({title:catalog.title,groups:catalog.groups,pages}).replace(/</g,'\\u003c');
 const template=fs.readFileSync(path.join(root,'app/reader.html'),'utf8');
-const output=template.replace('__PAYLOAD__',payload);
+const analytics=JSON.parse(fs.readFileSync(path.join(root,'app/analytics.json'),'utf8'));
+const tracker=fs.readFileSync(path.join(root,'app/analytics.js'),'utf8');
+const output=template.replace('__PAYLOAD__',()=>payload)
+ .replace('__ANALYTICS_CONFIG__',()=>JSON.stringify(analytics).replace(/</g,'\\u003c'))
+ .replace('__ANALYTICS_RUNTIME__',()=>tracker);
 fs.mkdirSync(path.join(root,'site'),{recursive:true});fs.writeFileSync(path.join(root,'site/index.html'),output);
 console.log(JSON.stringify({status:'built',pages:pages.length,images:pages.filter(p=>p.html.includes('<img')).length,bytes:Buffer.byteLength(output)},null,2));
 

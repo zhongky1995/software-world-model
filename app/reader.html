@@ -59,6 +59,8 @@ dialog{width:min(700px,calc(100% - 32px));max-height:82vh;padding:0;border:1px s
  <p class="search-status" id="search-status" aria-live="polite"></p><div class="search-results" id="search-results"></div>
 </dialog>
 <script id="knowledge-data" type="application/json">__PAYLOAD__</script>
+<script id="analytics-config" type="application/json">__ANALYTICS_CONFIG__</script>
+<script>__ANALYTICS_RUNTIME__</script>
 <script>
 (()=>{
 'use strict';
@@ -67,7 +69,8 @@ const main=document.getElementById('main'),nav=document.getElementById('navigati
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const short=p=>p.title.split('：')[0],groupName=p=>groupById.get(p.group)?.name||(p.group==='orientation'?'整体地图':'概念与资料');
 const store={get(key,fallback){try{return JSON.parse(localStorage.getItem('swm.'+key))??fallback}catch{return fallback}},set(key,value){try{localStorage.setItem('swm.'+key,JSON.stringify(value))}catch{}}};
-let current='home',resumeTarget=null,scrollTimer=null,lastTrigger=null,restoring=false,menuPosition=0;
+const analytics=window.readerAnalytics;
+let current='home',resumeTarget=null,scrollTimer=null,searchTimer=null,lastTrigger=null,restoring=false,menuPosition=0;
 let fontSize=store.get('font',17);fontSize=Number.isFinite(fontSize)?Math.min(21,Math.max(15,fontSize)):17;
 document.documentElement.style.setProperty('--article-size',fontSize+'px');
 nav.innerHTML=`<a class="nav-home" href="#/home">知识地图</a><a class="nav-home" href="#/world-map">先看整张地图</a>`+data.groups.map((g,i)=>`<section class="nav-group"><h2><span class="mono">${String(i+1).padStart(2,'0')}</span>${esc(g.name)}</h2>${pages.filter(p=>p.group===g.id).map(p=>`<a href="#/${p.id}">${esc(short(p))}</a>`).join('')}</section>`).join('')+`<section class="nav-group"><h2>概念与资料</h2><a class="nav-reference" href="#/glossary">概念索引</a><a class="nav-reference" href="#/sources">阅读资料与知识边界</a></section>`;
@@ -85,19 +88,22 @@ document.addEventListener('keydown',e=>{
 });
 function savePosition(){if(byId.has(current)&&!dialog.open&&!restoring&&!side.classList.contains('open')){const positions=store.get('positions',{});positions[current]=scrollY;store.set('positions',positions);store.set('last',current)}}
 function home(){const last=byId.get(store.get('last',''));
- return `<div class="home"><section class="hero"><p class="eyebrow mono">A map for understanding software</p><h1>软件世界模型</h1><p class="lead">从你看得见的按钮，<br>理解软件背后怎样做事、记事和合作。</p><p class="sub">为第一次理解软件的人写。先看熟悉的现象，再认识背后的原理；不用先会写代码。</p><div class="hero-actions"><a class="primary" href="#/world-map">从这里开始 <span aria-hidden="true">↗</span></a><a class="secondary" href="#/glossary">按名词查找 <span aria-hidden="true">→</span></a></div>${last?`<a class="resume" href="#/${last.id}" data-resume>继续上次阅读：${esc(short(last))}<span aria-hidden="true">→</span></a>`:''}</section><div class="section-title"><h2>七个观察方向</h2><p>同一个系统，彼此连接的不同视角</p></div><div class="atlas">${data.groups.map((g,i)=>`<section class="map-card"><div class="map-card-head"><span class="map-number mono">${String(i+1).padStart(2,'0')}</span><div><h3>${esc(g.name)}</h3><p class="map-question">${esc(g.question)}</p></div></div><div class="entries">${pages.filter(p=>p.group===g.id).map(p=>`<a href="#/${p.id}"><span>${esc(short(p))}</span><span aria-hidden="true">↗</span></a>`).join('')}</div></section>`).join('')}</div><p class="home-note">自由阅读，无需打卡或完成练习。阅读位置仅用于继续阅读。<br><a href="#/sources">阅读资料与知识边界</a> · <a href="https://github.com/zhongky1995/software-world-model" target="_blank" rel="noopener noreferrer">GitHub</a> · <a href="https://github.com/zhongky1995/software-world-model/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT</a></p></div>`;
+ return `<div class="home"><section class="hero"><p class="eyebrow mono">A map for understanding software</p><h1>软件世界模型</h1><p class="lead">从你看得见的按钮，<br>理解软件背后怎样做事、记事和合作。</p><p class="sub">为第一次理解软件的人写。先看熟悉的现象，再认识背后的原理；不用先会写代码。</p><div class="hero-actions"><a class="primary" href="#/world-map">从这里开始 <span aria-hidden="true">↗</span></a><a class="secondary" href="#/glossary">按名词查找 <span aria-hidden="true">→</span></a></div>${last?`<a class="resume" href="#/${last.id}" data-resume>继续上次阅读：${esc(short(last))}<span aria-hidden="true">→</span></a>`:''}</section><div class="section-title"><h2>七个观察方向</h2><p>同一个系统，彼此连接的不同视角</p></div><div class="atlas">${data.groups.map((g,i)=>`<section class="map-card"><div class="map-card-head"><span class="map-number mono">${String(i+1).padStart(2,'0')}</span><div><h3>${esc(g.name)}</h3><p class="map-question">${esc(g.question)}</p></div></div><div class="entries">${pages.filter(p=>p.group===g.id).map(p=>`<a href="#/${p.id}"><span>${esc(short(p))}</span><span aria-hidden="true">↗</span></a>`).join('')}</div></section>`).join('')}</div><p class="home-note">自由阅读，无需打卡或完成练习。阅读位置保存在本机。<br>在线匿名统计浏览与搜索操作，用于改进内容；不上传搜索词。<br><a href="#/sources">阅读资料与知识边界</a> · <a href="https://github.com/zhongky1995/software-world-model" target="_blank" rel="noopener noreferrer">GitHub</a> · <a href="https://github.com/zhongky1995/software-world-model/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT</a></p></div>`;
 }
 function article(p){const core=pages.filter(x=>x.group!=='reference'),i=core.findIndex(x=>x.id===p.id),prev=core[i-1],next=core[i+1];
 return `<div class="reader"><article class="article" data-article="${p.id}"><header class="article-head"><p class="eyebrow">${esc(groupName(p))}</p><h1>${esc(p.title)}</h1></header><div class="article-body">${p.html}</div><section class="related"><h2>沿着关系继续读</h2><div class="related-links">${p.related.map(id=>byId.get(id)).filter(Boolean).map(x=>`<a href="#/${x.id}">${esc(short(x))}<span aria-hidden="true">→</span></a>`).join('')}</div></section><nav class="reader-footer" aria-label="建议阅读次序">${prev?`<a href="#/${prev.id}">← ${esc(short(prev))}</a>`:'<a href="#/home">← 回到知识地图</a>'}${next?`<a href="#/${next.id}">${esc(short(next))} →</a>`:'<a href="#/home">回到知识地图 →</a>'}</nav><p class="article-note">这些概念帮助理解系统；具体实现需要结合对应文档与运行证据。</p></article><aside class="outline" aria-label="文章大纲"><h2>本篇内容</h2>${p.outline.filter(x=>x.title!=='相关概念').map(x=>`<a href="#/${p.id}" data-section="${x.id}">${esc(x.title)}</a>`).join('')}<a href="#/home" style="margin-top:26px">← 返回地图</a></aside></div>`;
 }
-function render(){clearTimeout(scrollTimer);savePosition();restoring=true;closeMenu();let id='home';try{id=decodeURIComponent(location.hash.replace(/^#\//,'')||'home')}catch{}current=byId.has(id)?id:'home';const p=byId.get(current);
+function render(){clearTimeout(searchTimer);clearTimeout(scrollTimer);savePosition();restoring=true;closeMenu();let id='home';try{id=decodeURIComponent(location.hash.replace(/^#\//,'')||'home')}catch{}current=byId.has(id)?id:'home';const p=byId.get(current);
  main.innerHTML=p?article(p):home();document.title=p?short(p)+' · 软件世界模型':'软件世界模型';document.getElementById('breadcrumb').textContent=p?'知识地图 / '+groupName(p):'知识地图';
  nav.querySelectorAll('a').forEach(a=>a.getAttribute('href')===`#/${current}`?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+ analytics.page(current,p?.title||data.title);
  const target=resumeTarget===current?store.get('positions',{})[current]||0:0;resumeTarget=null;requestAnimationFrame(()=>{scrollTo(0,target);main.focus({preventScroll:true});restoring=false});if(p)store.set('last',p.id);
 }
 document.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;
  if(a.dataset.section){e.preventDefault();document.getElementById(a.dataset.section)?.scrollIntoView({block:'start'});return}
- if(a.hasAttribute('data-resume'))resumeTarget=a.hash.slice(2);
+ if(a.hasAttribute('data-resume')){resumeTarget=a.hash.slice(2);analytics.event('resume-reading',{article:resumeTarget})}
+ if(a.closest('#search-results')&&a.hash.startsWith('#/'))analytics.event('search-result-click',{article:a.hash.slice(2)});
+ if(a.hostname==='github.com')analytics.event('github-click');
  if(a.hash.startsWith('#/')){if(dialog.open)dialog.close();if(a.hash===location.hash){closeMenu();if(a.hasAttribute('data-resume'))scrollTo(0,store.get('positions',{})[current]||0);else scrollTo(0,0)}}
 });
 addEventListener('hashchange',render);addEventListener('beforeunload',savePosition);
@@ -105,17 +111,18 @@ addEventListener('scroll',()=>{document.getElementById('top-button').style.displ
 document.getElementById('top-button').addEventListener('click',()=>scrollTo(0,0));
 document.getElementById('font-smaller').addEventListener('click',()=>{fontSize=Math.max(15,fontSize-1);document.documentElement.style.setProperty('--article-size',fontSize+'px');store.set('font',fontSize)});
 document.getElementById('font-larger').addEventListener('click',()=>{fontSize=Math.min(21,fontSize+1);document.documentElement.style.setProperty('--article-size',fontSize+'px');store.set('font',fontSize)});
-document.getElementById('print-button').addEventListener('click',()=>window.print());
-function openSearch(trigger){lastTrigger=trigger;closeMenu();if(!dialog.open)dialog.showModal();input.focus();search()}
+document.getElementById('print-button').addEventListener('click',()=>{analytics.event('print',{article:current});window.print()});
+function openSearch(trigger){lastTrigger=trigger;closeMenu();if(!dialog.open){dialog.showModal();analytics.event('search-open',{article:current})}input.focus();search()}
 document.querySelectorAll('[data-search]').forEach(b=>b.addEventListener('click',()=>openSearch(b)));
 document.getElementById('search-close').addEventListener('click',()=>dialog.close());dialog.addEventListener('close',()=>{if(lastTrigger&&!lastTrigger.closest('[inert]'))lastTrigger.focus()});
 dialog.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();dialog.close()}});
 dialog.addEventListener('click',e=>{const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()});
 function highlight(text,q){if(!q)return esc(text);const i=text.toLowerCase().indexOf(q.toLowerCase());return i<0?esc(text):esc(text.slice(0,i))+'<mark>'+esc(text.slice(i,i+q.length))+'</mark>'+esc(text.slice(i+q.length))}
-function search(){const q=input.value.trim(),lower=q.toLowerCase();
+function search(){clearTimeout(searchTimer);const q=input.value.trim(),lower=q.toLowerCase();
  if(!q){document.getElementById('search-status').textContent='搜索全部 29 篇正文、概念索引与英文别名';results.innerHTML='<div class="empty">试试：状态、API、抽象、并发、Runtime、Agent…<br>也可以输入正文里的问题或关键词。</div>';return}
  const found=pages.map(p=>{const title=p.title.toLowerCase(),alias=p.aliases.join(' ').toLowerCase(),body=p.text.toLowerCase();return {p,score:(title.includes(lower)?20:0)+(alias.includes(lower)?10:0)+(body.includes(lower)?1:0)}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||pages.indexOf(a.p)-pages.indexOf(b.p));
  document.getElementById('search-status').textContent=`全库搜索 · 找到 ${found.length} 篇相关内容`;
+ searchTimer=setTimeout(()=>analytics.event('search',{query_length:q.length,result_count:found.length}),800);
  results.innerHTML=found.length?found.map(({p})=>{const i=p.text.toLowerCase().indexOf(lower);let snippet=p.text.slice(Math.max(0,i-35),Math.max(0,i-35)+145);return `<a class="result" href="#/${p.id}"><small>${esc(groupName(p))}</small><strong>${highlight(p.title,q)}</strong><p>${highlight(snippet,q)}${snippet.length>=145?'…':''}</p></a>`}).join(''):'<div class="empty">没有找到相关内容。可以缩短关键词，或使用概念的中文名。<br><a href="#/glossary" style="text-decoration:underline">打开概念索引 →</a></div>';
 }
 input.addEventListener('input',search);render();
